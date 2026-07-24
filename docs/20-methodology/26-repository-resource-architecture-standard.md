@@ -15,7 +15,16 @@ approved_at:
 
 # KGAID Repository Resource Architecture Standard
 
-## 1. Purpose and status
+## 1. Design Philosophy
+
+Repository structure reflects responsibility. A directory is not a
+technological building block and does not own business or other semantic
+meaning; it is a visible responsibility boundary that communicates the primary
+owner and purpose of the resources it contains. This standard therefore
+describes an architecture of knowledge and resources, not a prescribed
+structure or set of business modules for a particular project.
+
+## 2. Purpose and status
 
 This standard defines a repository resource architecture for a KGAID-adopting
 project. It separates production realization, tests, documentation, reference
@@ -31,7 +40,7 @@ The pattern was generalized from an accepted resource architecture in a KGAID
 adopting repository. That implementation is empirical input, not a normative
 authority for this standard.
 
-## 2. Normative conventions and scope
+## 3. Normative conventions and scope
 
 The keywords **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY**
 have the meaning defined in the [KGAID Principles][principles].
@@ -50,7 +59,7 @@ Every versioned resource MUST have one primary class and one accountable owner.
 An index, generated view, translation, or copy MAY refer to an owning resource,
 but MUST NOT create a competing owner.
 
-## 3. Architectural rules
+## 4. Architectural rules
 
 ### RRA-1 — One authoritative documentation tree
 
@@ -79,8 +88,10 @@ MUST NOT infer one from the repository layout.
 
 Snapshots, logs, reports, traces, exports, caches, generated runtime state,
 and environment-specific credentials MUST NOT be versioned as repository
-resources. They belong under `.local/` or in an external approved retention
-system and MUST be ignored by version control.
+resources. `.local/` is the recommended name for their local working area. A
+project MAY use another name only when it documents the mapping to `.local/`
+and preserves every rule of this standard. The local working area MUST be
+ignored by version control.
 
 ### RRA-5 — Reference data and test data remain distinct
 
@@ -90,7 +101,7 @@ belongs to the test suite, normally under `tests/fixtures/`; it remains owned
 by tests even when it resembles a reference dataset. Production code MUST NOT
 silently treat either class as a runtime dependency.
 
-## 4. Resource classes
+## 5. Resource classes
 
 The following classes are the canonical locations at repository root. A
 project MAY omit a class that it does not need. It MUST NOT use an alternative
@@ -104,7 +115,7 @@ preserving the rules of this standard.
 | `docs/` | The single authoritative documentation tree for all maintained project knowledge. | Documentation or knowledge owner | Markdown or other approved documentation source, diagrams, document-local assets, generated documentation source, and documentation configuration. | Runtime outputs, raw sensitive evidence, production source code, test-only fixtures, and machine-readable reference data whose primary purpose is data rather than explanation. |
 | `datasets/` | Versioned, sanitized, machine-readable reference data used for review, reproducibility, or controlled analysis. | Reference-data steward | JSON, CSV, XML, YAML, Parquet, checksums, manifests, and other approved machine-readable data formats. | Narrative documentation, secrets, unsanitized production extracts, transient runtime output, and test fixtures whose primary owner is a test. |
 | `tools/` | Supporting tooling that is not part of the product runtime, such as analyzers, generators, migration helpers, and read-only query templates. | Tool owner | Tool source, tool-local build configuration, scripts, query templates, and tool tests where the project chooses to keep them with the tool. | Production runtime code, authoritative project documentation, runtime reports, credentials, and a dependency on a sibling checkout. |
-| `.local/` | Ignored local working area for runtime and research artifacts that are not repository assets. | Local operator | Logs, snapshots, traces, reports, exports, caches, temporary files, local configuration, and local credentials. | Versioned source, accepted documentation, durable reference data, test fixtures required by CI, and any artifact that another checkout must obtain from version control. |
+| `.local/` (recommended name) | Ignored local working area for runtime and research artifacts that are not repository assets. | Local operator | Logs, snapshots, traces, reports, exports, caches, temporary files, local configuration, and local credentials. | Versioned source, accepted documentation, durable reference data, test fixtures required by CI, and any artifact that another checkout must obtain from version control. |
 
 `src/`, `tests/`, and `tools/` MAY contain language-specific subdirectories.
 The standard intentionally does not prescribe their names. Documentation may
@@ -112,7 +123,7 @@ refer to a dataset by stable identifier or path, and tests MAY read a controlled
 reference dataset when that dependency is explicit; neither relationship
 changes the owner's class.
 
-## 5. Recommended repository structure
+## 6. Recommended repository structure
 
 ```text
 repository/
@@ -129,7 +140,7 @@ repository/
 │   └── <reference-data-set>/
 ├── tools/
 │   └── <supporting-tool>/
-├── .local/                 # ignored; normally absent from version control
+├── .local/                 # recommended name; ignored and normally absent from version control
 ├── README.md                # navigation entry point, not a second docs tree
 ├── <build-and-repository-control-files>
 └── <license-and-contribution-files>
@@ -140,7 +151,7 @@ navigation entry point are outside the six resource classes. They SHOULD remain
 small and MUST NOT become catch-all storage for a class that has a canonical
 location above.
 
-## 6. Migration rules for existing repositories
+## 7. Migration rules for existing repositories
 
 Migration MUST preserve behavior and history unless the authorized change
 explicitly includes a behavior change. The project SHOULD perform the work in
@@ -173,7 +184,7 @@ temporary exception MUST have an owner, a stated reason, and a removal
 condition. A compatibility shim MUST NOT become an undocumented permanent
 second location.
 
-## 7. Anti-patterns
+## 8. Anti-patterns
 
 The following patterns violate this standard or require an explicit,
 time-bounded migration exception:
@@ -195,7 +206,7 @@ time-bounded migration exception:
 - A root README that duplicates maintained documentation and diverges from the
   authoritative `docs/` content.
 
-## 8. Architectural effect and conformance
+## 9. Architectural effect and conformance
 
 Applying this standard improves:
 
@@ -218,7 +229,7 @@ separate from documentation, and test data remains owned by tests. A project
 MAY tailor names and depths, but MUST record a mapping that preserves these
 boundaries.
 
-## 9. Relationship to KGAID
+## 10. Relationship to KGAID
 
 This standard realizes the [Single Knowledge Ownership][single-ownership]
 invariant without reducing artifact identity to a path. It provides a storage
