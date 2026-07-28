@@ -554,6 +554,14 @@ The Knowledge AI MAY request corrections directly from the Execution AI only wit
 
 It MUST NOT rewrite criteria after execution to match the implementation.
 
+These task-level results are not Implementation Conformance Review outcomes.
+After integration, the Increment-level review defined in the
+[Delivery Increment Model](24-delivery-increment-model.md#15-implementation-conformance-review)
+classifies any remaining deviation as `Implementation Rework Required` or
+`Architecture Rework Required`. A task-level `correction required` MAY support
+implementation rework only when the correction preserves accepted architecture,
+Baseline, contracts, Domain Model, ADRs, and the authorized task boundary.
+
 ## 13. Correction Request
 
 A correction request SHOULD contain:

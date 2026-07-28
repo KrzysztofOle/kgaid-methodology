@@ -609,6 +609,15 @@ The Knowledge AI MUST escalate when the proposed correction would:
 
 Repeated correction without convergence SHOULD trigger escalation with evidence of the attempts and the unresolved cause.
 
+For an integrated Vertical Slice, this boundary is recorded through the
+Implementation Conformance Review. A correction that preserves accepted
+architecture, Baseline, contracts, Domain Model, ADRs, and delegated scope is
+`Implementation Rework Required` and is checked by a Quick Conformance Review.
+If review shows that any of those accepted elements is wrong, the Knowledge AI
+MUST classify the finding for `Architecture Rework Required` and present it to
+the applicable Human Authority. Neither outcome authorizes the AI to change
+accepted architecture on its own.
+
 ### 18.5 Review input
 
 The Execution AI's narrative report is not sufficient review input by itself.
@@ -638,6 +647,7 @@ human-approved objective and scope
 → implementation revision
 → execution evidence
 → Knowledge AI review
+→ Implementation Conformance Review outcome
 → human acceptance or rejection
 ~~~
 

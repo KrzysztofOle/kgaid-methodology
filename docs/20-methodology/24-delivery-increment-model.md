@@ -288,12 +288,13 @@ flowchart TD
     B --> C["Review and human acceptance"]
     C --> D["Realization readiness"]
     D --> E["Delegate and execute tasks"]
-    E --> F["Integrate and review"]
-    F --> G["Verify increment claim"]
-    G --> H["Baseline"]
-    H --> I["Release or retain"]
-    I --> J["Observe and learn"]
-    J --> A
+    E --> F["Integrate"]
+    F --> G["Implementation Conformance Review"]
+    G --> H["Verify increment claim"]
+    H --> I["Baseline"]
+    I --> J["Release or retain"]
+    J --> K["Observe and learn"]
+    K --> A
 ~~~
 
 The flow MAY return upstream whenever a discovery changes product meaning, requirement, architecture, contract, risk, or evidence scope.
@@ -316,17 +317,24 @@ Humans and AI realize authorized tasks. Discoveries are routed back to the appro
 
 ### 9.5 Integration
 
-Task results are combined and evaluated against increment-wide architecture, contracts, and acceptance criteria.
+Task results are combined into an implementation revision that is ready for
+Implementation Conformance Review.
 
-### 9.6 Verification
+### 9.6 Implementation conformance review
+
+The integrated result is compared with the accepted architecture and applicable
+contracts. Its review outcome determines the rework route before claim
+verification continues.
+
+### 9.7 Verification
 
 Evidence is aggregated and gaps are made explicit. Verification status reflects the exact supported claim.
 
-### 9.7 Baseline and release
+### 9.8 Baseline and release
 
 Accepted knowledge, implementation, evidence, limitations, and risk are bound. A separate human authority decides release where applicable.
 
-### 9.8 Observation and learning
+### 9.9 Observation and learning
 
 Operational evidence evaluates actual behavior and product outcomes. Material learning begins another governed knowledge cycle.
 
@@ -480,7 +488,92 @@ A set of individually passing tasks MAY fail integration.
 
 Integration defects MAY return to task correction when the accepted increment remains valid. A defect that challenges increment knowledge returns to the relevant human authority.
 
-## 15. Verification and Evidence Coverage
+## 15. Implementation Conformance Review
+
+An **Implementation Conformance Review** is a bounded review of an integrated
+Vertical Slice against its accepted architecture. It determines whether an
+observed deviation is implementation-only or proves that accepted architecture
+MUST be reworked. It is neither a lifecycle status, a verification status, nor
+a project-level KGAID conformance determination.
+
+### 15.1 Inputs and authority
+
+The review MUST identify its subject scope and exact implementation revision.
+It MUST inspect, as applicable:
+
+- the accepted Architecture Baseline and applicable ADRs;
+- the Domain Model, requirements, and material contracts that constrain the
+  slice;
+- architecture boundaries, responsibilities, dependencies, and quality
+  strategies;
+- the actual integrated implementation, diff, and traceability;
+- relevant checks, evidence, limitations, and previous review findings.
+
+A Knowledge and Review AI MAY prepare the comparison and recommendation. The
+applicable Human Authority remains responsible for accepting a changed
+architecture, contract, Baseline, Domain Model, ADR, risk, or formal closure
+claim. A review MUST preserve its subject revision, findings, result, and
+follow-up rather than mutating a previous review run into a later outcome.
+
+### 15.2 Review outcomes
+
+The full Implementation Conformance Review MUST conclude with exactly one of
+the following outcomes:
+
+| Outcome | Meaning and required next action |
+| --- | --- |
+| **Conformant** | The implementation conforms to accepted architecture. The Vertical Slice MAY be formally closed for its declared scope, subject to separate verification, baseline, release, and Human Authority conditions. |
+| **Conformant with Observations** | Observations or minor deviations are recorded, owned, and do not invalidate architecture or block formal closure of the declared slice. |
+| **Implementation Rework Required** | Accepted architecture remains correct. All required corrections are limited to implementation; they require no new ADR, change to Baseline, contract change, or Domain Model change. Rework returns to implementation and MUST be followed by a Quick Conformance Review. |
+| **Architecture Rework Required** | The implementation demonstrates an error in accepted architecture: for example an incorrect Domain Model, Baseline, contract, module boundary, or ADR. The affected scope MUST return to Architecture; any affected contract and readiness work follows its normal lifecycle before implementation resumes. |
+
+An observation MUST NOT be used to conceal a deviation that changes accepted
+meaning or boundary. Conversely, an implementation defect MUST NOT be labeled
+architecture rework merely because its correction is difficult. The review
+record MUST state the authoritative source, observed divergence, affected
+scope, rationale for the classification, and required follow-up.
+
+### 15.3 Quick Conformance Review
+
+A **Quick Conformance Review** is a limited follow-up review after
+`Implementation Rework Required`. Its sole purpose is to confirm that the
+specific deviations identified by the previous full review have been removed.
+
+It MUST:
+
+- reference the preceding review run and each deviation identifier;
+- inspect the corrected implementation revision and the checks relevant to
+  those deviations;
+- preserve the accepted architecture and the original review scope; and
+- avoid re-performing a full implementation review or treating unreviewed
+  implementation as conformant.
+
+It MUST NOT re-evaluate the whole implementation, replace the full review, or
+silently extend the correction scope. A closed Quick Conformance Review ends
+with one of these outcomes only:
+
+| Outcome | Meaning and next action |
+| --- | --- |
+| **Conformant** | All named deviations are removed; the slice MAY proceed to formal closure for the declared scope. |
+| **Conformant with Observations** | All named deviations are removed; recorded observations do not block formal closure. |
+| **Architecture Rework Required** | The correction evidence shows that accepted architecture, a Baseline, contract, Domain Model, module boundary, or ADR is wrong; return to Architecture. |
+
+If a named implementation deviation remains unresolved without challenging
+architecture, the quick review remains open and returns the same bounded scope
+to implementation rework. It does not create a new full-review outcome or
+broaden the review.
+
+### 15.4 Rework boundaries and Human Authority
+
+`Implementation Rework Required` authorizes only a correction within already
+accepted meaning and delegation. It MUST NOT authorize a new ADR, a Baseline
+change, contract change, Domain Model change, or architectural boundary change.
+Discovery of any such need converts the route to `Architecture Rework
+Required`; the relevant Human Authority decides the resulting knowledge
+changes. Neither AI nor the implementation itself MAY redefine architecture to
+make a review pass.
+
+## 16. Verification and Evidence Coverage
 
 Increment verification compares the integrated result with the accepted increment claim and criteria.
 
@@ -505,7 +598,7 @@ The Knowledge and Review AI SHOULD:
 
 The Verification Authority determines whether evidence supports the claim. The Human Risk or Baseline Authority accepts residual limitations where applicable.
 
-## 16. Completion and Decision Semantics
+## 17. Completion and Decision Semantics
 
 KGAID distinguishes:
 
@@ -535,13 +628,15 @@ An increment is not complete merely because:
 
 The declared completion claim, scope, evidence, limitations, and human decision determine completion.
 
-## 17. Scope Change and Discovery
+## 18. Scope Change and Discovery
 
 A material discovery during realization MUST be classified.
 
 | Discovery | Default handling |
 | --- | --- |
 | Local implementation defect within accepted knowledge | Correct through an existing task contract. |
+| Implementation Conformance Review finds implementation-only deviation | Record `Implementation Rework Required`; correct the identified scope and perform a Quick Conformance Review. |
+| Implementation Conformance Review challenges architecture | Record `Architecture Rework Required`; return to Architecture and revise affected knowledge through its lifecycle. |
 | Missing task that remains within increment scope | Add and authorize a task. |
 | Clarification without semantic change | Record clarification and update affected task context. |
 | Requirement or business meaning change | Return to the owning knowledge artifact and Human Authority. |
@@ -558,7 +653,7 @@ When the original and new outcomes can be accepted independently, a separate Inc
 
 History and evidence for the previous accepted revision MUST be preserved.
 
-## 18. Dependencies and Concurrent Increments
+## 19. Dependencies and Concurrent Increments
 
 Increment relationships MAY include:
 
@@ -584,7 +679,7 @@ Concurrent increments MUST coordinate:
 
 A change to shared knowledge triggers impact analysis for every dependent increment. Unrelated ready work MAY continue when the disputed scope remains isolated.
 
-## 19. Baseline, Release, and Learning
+## 20. Baseline, Release, and Learning
 
 A baselined increment SHOULD identify:
 
@@ -613,7 +708,7 @@ After release, outcome and operational evidence SHOULD be linked back to the Inc
 
 Operational success does not retroactively prove that every design claim was correct. Operational failure does not automatically invalidate all accepted knowledge. Each observation is scoped and routed to the relevant owner.
 
-## 20. Reference Increment Template
+## 21. Reference Increment Template
 
 ~~~markdown
 # INC-NNN — Increment title
@@ -699,7 +794,25 @@ Operational success does not retroactively prove that every design claim was cor
 
 ## Discoveries and changes
 
-## Final review
+## Implementation Conformance Review
+
+- Review run identifier:
+- Review type: Full / Quick
+- Subject scope and implementation revision:
+- Accepted Architecture Baseline and applicable ADRs:
+- Applicable Domain Model, contracts, and requirements:
+- Preceding full review and deviation identifiers (Quick only):
+- Outcome (Full): Conformant / Conformant with Observations / Implementation Rework Required / Architecture Rework Required
+- Outcome (Quick): Conformant / Conformant with Observations / Architecture Rework Required
+
+### Findings and observations
+
+| ID | Classification | Authoritative source | Observed divergence or observation | Affected scope | Required follow-up |
+| --- | --- | --- | --- | --- | --- |
+
+### Rework rationale
+
+### Formal-closure recommendation
 
 ### Implementation result
 
@@ -726,9 +839,9 @@ Operational success does not retroactively prove that every design claim was cor
 
 A project MAY combine or shorten sections when the retained content is sufficient for its risk and conformance profile.
 
-## 21. Minimal and Extended Application
+## 22. Minimal and Extended Application
 
-### 21.1 Minimal application
+### 22.1 Minimal application
 
 A low-risk increment MAY be represented by one concise change record containing:
 
@@ -742,7 +855,7 @@ A low-risk increment MAY be represented by one concise change record containing:
 - limitations;
 - human authorization and final decision.
 
-### 21.2 Extended application
+### 22.2 Extended application
 
 A high-risk, regulated, production-critical, security-sensitive, distributed, or long-lived increment SHOULD include:
 

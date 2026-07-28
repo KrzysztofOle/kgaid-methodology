@@ -464,10 +464,10 @@ sequenceDiagram
     E->>E: Implement, test, collect raw evidence
     E->>K: Return changes, results, limitations
     K->>K: Compare claims, criteria, diff, and evidence
-    alt Defect within accepted scope
+    alt Defect within accepted architecture
         K->>E: Request correction and reverification
         E->>K: Return corrected evidence
-    else Unsupported claim or new risk
+    else Architecture is challenged, unsupported claim, or new risk
         K->>H: Present decision packet
     end
     K->>H: Report supported claim and limitations
@@ -503,7 +503,26 @@ ChatGPT SHOULD:
 
 ChatGPT review is evidence of review, not automatic proof of implementation correctness.
 
-### 16.3 Human responsibility
+### 16.3 Implementation conformance and rework evidence
+
+Implementation Conformance Review uses verification evidence to distinguish an
+implementation defect from a challenged architecture. Its named outcomes are
+defined in the [Delivery Increment Model](../20-methodology/24-delivery-increment-model.md#15-implementation-conformance-review), not in the canonical claim-verification taxonomy.
+
+For `Implementation Rework Required`, the review evidence MUST show both the
+specific deviation and that correcting it does not require a new ADR, a change
+to Baseline, contract, Domain Model, or accepted architecture. The subsequent
+Quick Conformance Review MUST identify the preceding deviation, corrected
+revision, and evidence that the named deviation is removed; it MUST NOT infer
+conformance of unreviewed implementation.
+
+For `Architecture Rework Required`, the evidence MUST identify which accepted
+architectural element is challenged and why the problem cannot be corrected
+within accepted implementation boundaries. The resulting Architecture decision
+and any revised contracts or verification claims remain subject to the
+appropriate Human Authority.
+
+### 16.4 Human responsibility
 
 The Human or applicable authority SHOULD:
 

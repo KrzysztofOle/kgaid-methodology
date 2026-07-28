@@ -311,6 +311,14 @@ During realization:
 
 **Exit condition:** The declared increment is integrated and reviewable, required implementation work is complete, discovered scope conflicts are resolved or removed from the increment, and verification can execute against the intended subject.
 
+An integrated Vertical Slice MUST undergo an **Implementation Conformance
+Review** before it is formally closed for its declared scope. The review
+compares the implementation with accepted architecture and applicable
+contracts; it does not replace claim verification, baseline, release, or a
+Human Authority decision. Its result determines whether a deviation is local
+to realization or requires a return to architecture. The detailed review model
+is defined in the [Delivery Increment Model](24-delivery-increment-model.md#15-implementation-conformance-review).
+
 ### 6.8 PM-8 — Verify and baseline
 
 **Purpose:** Determine what claims the realized increment can support and bind them to reproducible evidence.
@@ -411,6 +419,40 @@ A checkpoint:
 - blocks only the affected claim or scope;
 - MUST NOT be passed by renaming missing knowledge or lowering a claim without authority.
 
+### 8.1 Implementation conformance workflow
+
+An Implementation Conformance Review is performed after PC-6 for the declared
+Vertical Slice. It uses the accepted Architecture as its reference; affected
+contracts, requirements, and evidence remain required inputs. The focused
+flow below does not bypass the normal PM-6 contract or PC-5 readiness
+conditions when architecture rework affects them.
+
+~~~mermaid
+flowchart TD
+    A["Architecture"] --> B["Implementation"]
+    B --> C["Implementation Conformance Review"]
+    C -->|"Conformant"| D["Formally close Vertical Slice"]
+    C -->|"Conformant with Observations"| D
+    C -->|"Implementation Rework Required"| E["Rework Implementation"]
+    E --> F["Quick Conformance Review"]
+    F -->|"Conformant"| D
+    F -->|"Conformant with Observations"| D
+    C -->|"Architecture Rework Required"| A
+    F -->|"Architecture Rework Required"| A
+~~~
+
+`Implementation Rework Required` is limited to corrections that preserve
+accepted architecture, Baseline, contracts, Domain Model, and ADRs. It returns
+only the identified implementation scope to realization and is followed by a
+Quick Conformance Review. `Architecture Rework Required` means that the
+implementation has challenged accepted architecture. It returns the affected
+scope to PM-5; applicable contracts, readiness, and delegations MUST then be
+reviewed through their normal lifecycle before realization resumes.
+
+`Conformant` and `Conformant with Observations` permit formal closure of the
+Vertical Slice for the declared scope. They do not, by themselves, establish a
+verification, baseline, release, or product-outcome claim.
+
 ## 9. Human and AI Collaboration
 
 | Process concern | AI MAY contribute | Humans remain accountable for |
@@ -449,7 +491,8 @@ Returning to earlier work is normal when knowledge changes.
 | Requirement is missing, contradictory, or unverifiable. | PM-4 Requirements. |
 | Boundary, responsibility, dependency, or quality strategy MUST change. | PM-5 Architecture. |
 | Observable obligation or compatibility semantics MUST change. | PM-6 Contracts. |
-| Realization does not satisfy accepted knowledge. | PM-7 Realize, unless upstream knowledge is challenged. |
+| Realization does not satisfy accepted knowledge while architecture remains valid. | PM-7 Realize; record `Implementation Rework Required` and perform a Quick Conformance Review after correction. |
+| Realization demonstrates that the Domain Model, Baseline, architecture, contract, module boundary, or ADR is wrong. | PM-5 Architecture and all affected upstream or contract lifecycles; record `Architecture Rework Required`. |
 | Evidence cannot support the intended claim. | PM-4 through PM-8 according to cause. |
 | Operation disproves an assumption or reveals a new need. | PM-1 Orient and the affected upstream concern. |
 

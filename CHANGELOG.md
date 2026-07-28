@@ -10,6 +10,9 @@ All notable changes to KGAID are recorded here. The format follows Keep a Change
   has not yet been submitted for approval. Documents move explicitly from
   `draft` to `pending`; only `pending` documents enter the Human Authority
   queue.
+- Implementation Conformance Review now distinguishes implementation-only
+  rework from Architecture Rework, with a bounded Quick Conformance Review for
+  checking corrections without repeating the whole review.
 
 Changes accepted after the prepared baseline and before a release are recorded
 here.
