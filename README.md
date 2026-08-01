@@ -52,6 +52,7 @@ The methodology composes accepted knowledge models into an end-to-end way of wor
 - [KGAID Delivery Increment Model](docs/20-methodology/24-delivery-increment-model.md) — the governed unit that connects accepted product knowledge, execution tasks, integration, evidence, baseline, and human acceptance.
 - [KGAID Knowledge Base Curation Workflow](docs/20-methodology/25-knowledge-base-curation-workflow.md) — proposed operational workflow for turning staged source materials into governed expert knowledge, maintaining traceability, and preserving human approval authority; it is not part of the current baseline.
 - [KGAID Repository Resource Architecture Standard](docs/20-methodology/26-repository-resource-architecture-standard.md) — proposed normative standard for separating production code, tests, documentation, reference data, supporting tools, and local runtime artifacts; it is not part of the current baseline.
+- [KGAID AI Assistant Instructions](docs/20-methodology/27-ai-assistant-instructions.md) — proposed, model-independent instruction profile for ChatGPT and other AI assistants, including the tool-first boundary between reproducible fact gathering and LLM reasoning; it is not part of the current baseline.
 
 ### 30 — Quality
 
@@ -89,7 +90,8 @@ Governance evidence records reviews and decisions about the methodology itself. 
 - [Prepared KGAID-0.1.0 manifest](docs/50-governance/baselines/KGAID-0.1.0.yaml) — first baseline membership and dependencies; publication remains pending.
 - [Draft Change Proposals](docs/50-governance/change-proposals/README.md) —
   lifecycle vocabulary, revision-bound Human Decision, Baseline Manifest v2,
-  and evidence-based methodology evolution.
+  evidence-based methodology evolution, metadata simplification, and the
+  proposed Tool-First LLM Architecture Principle.
 - [Open Human Authority decisions](docs/50-governance/decisions/README.md) —
   unresolved choices recorded without deciding them.
 - [Governance reviews](docs/50-governance/reviews/README.md) — Architecture
